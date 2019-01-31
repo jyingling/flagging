@@ -192,11 +192,13 @@ def dangles():
     countMap = {}
     for v in fid_comp.values():
         countMap[v] = countMap.get(v,0) + 1
-    singleConn = [k for k, v in fid_comp.items() if countMap[v] == 1]
+    singleConn = [k for k, v in fid_comp.items() if countMap[v] == 2]
     
-    error_idx = layer.fields().lookupField('error')
-    for feature in singleConn:
-        layer.changeAttributeValue(feature, error_idx, 5)
+    layer.selectByIds(singleConn)
+
+    #error_idx = layer.fields().lookupField('error')
+    #for feature in singleConn:
+    #    layer.changeAttributeValue(feature, error_idx, 5)
     
 #    expr = QgsExpression("length < 2")
 #    selection = layer.getFeatures(QgsFeatureRequest(expr))
