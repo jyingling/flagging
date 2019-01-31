@@ -8,10 +8,10 @@ Sources:
     Ben W, GIS stack exchange 
     
 To Do: 
-    Gaps section: 1 neighbor connected, 1 <2m away
-    Dangles section: 1 neighbor connected, 1 >2m away, segment <2m long
+    Gaps/dangles: still need to identify more traditional gaps and dangles (missing a lot)
     Islands: check discrepancy with ArcMap Geometry Checker (see txt files for affected fids)
     Secondary geometry check (use .isGeosValid without crashing)
+    Error_fields: change so no values added/changed if error field already exists 
 
 Notes:
     Try to use global variables for syntax cleanliness 
@@ -24,22 +24,26 @@ import networkx as nx
 import time
 import os
 
-def load_layer():
+def load_layer(file):
 
-    file = "C:/Users/julia/Documents/vancouver/automation/merged_org.shp"
-    layer = iface.addVectorLayer(file, "Merged", 'ogr')
-    if not layer:
-        print("Layer not loaded")
+    file = input("C:/Users/julia/Documents/vancouver/automation/merged_org.shp  -- or press 1 for file already loaded")
 
-    print("load_layer done")
+    if file == 1:
+        print("layer already loaded")
 
+    else:
+        layer = iface.addVectorLayer(file, "Merged", 'ogr')
+        print("load_layer done")
+    
+    #if not layer:  --> include later
+        #print("Layer not loaded")
 
 
 def error_field():
 
     layer = iface.activeLayer()
     layer.startEditing()
-    
+
     new_field = 'error'
     layer.addAttribute(QgsField(new_field, QVariant.Int))
     layer.updateFields()
@@ -64,6 +68,7 @@ def no_length():
         layer.changeAttributeValue(feature.id(), error_idx, 1)
         
     print("no_length done")
+
 
 def invalid_geom():
     
@@ -167,7 +172,8 @@ def islands():
 
     print("islands done")
 
-def dangles():
+
+def pairs():
 
     #Dangles section: 1 neighbor connected, segment <2m long
     #This section flaggs subnetworks with only two components - finds flags, dangles, connected islands
@@ -197,7 +203,9 @@ def dangles():
     
     error_idx = layer.fields().lookupField('error')
     for feature in singleConn:
-        layer.changeAttributeValue(feature, error_idx, 5)
+        layer.changeAttributeValue(feature, error_idx, 1)
+
+    print("pairs (some dangles, some gaps) done")
 
 
 # Prepping file for flagging
@@ -212,7 +220,7 @@ invalid_geom()
 no_length()
 duplicates()
 islands()
-dangles()
+pairs()
 
 end = time.time()
 runtime = int(end - start)
