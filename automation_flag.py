@@ -170,6 +170,7 @@ def islands():
 def dangles():
 
     #Dangles section: 1 neighbor connected, segment <2m long
+    #This section flaggs subnetworks with only two components - finds flags, dangles, connected islands
       
     layer = iface.activeLayer()
     G = nx.Graph() 
@@ -192,15 +193,11 @@ def dangles():
     countMap = {}
     for v in fid_comp.values():
         countMap[v] = countMap.get(v,0) + 1
-    singleConn = [k for k, v in fid_comp.items() if countMap[v] == 1]
+    singleConn = [k for k, v in fid_comp.items() if countMap[v] == 2]
     
     error_idx = layer.fields().lookupField('error')
     for feature in singleConn:
         layer.changeAttributeValue(feature, error_idx, 5)
-    
-#    expr = QgsExpression("length < 2")
-#    selection = layer.getFeatures(QgsFeatureRequest(expr))
-#        can't select earlier because geometric network doesn't build properly
 
 
 # Prepping file for flagging
@@ -215,7 +212,7 @@ invalid_geom()
 no_length()
 duplicates()
 islands()
-#dangles()
+dangles()
 
 end = time.time()
 runtime = int(end - start)
@@ -230,4 +227,4 @@ Errors flagged: {errors}
 Compared to manual: {pctErrors}%
 Runtime: {runtime}""")
 
-layer.removeSelection()
+#layer.removeSelection()
