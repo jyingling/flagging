@@ -10,11 +10,11 @@ Sources:
 To Do: 
     Gaps/dangles: still need to identify more traditional gaps and dangles (missing a lot)
     Islands: check discrepancy with ArcMap Geometry Checker (see txt files for affected fids)
-    Secondary geometry check (use .isGeosValid without crashing)
-    Error_fields: change so no values added/changed if error field already exists 
 
-Notes:
+Less important:
+    Error_fields: change so no values added/changed if error field already exists 
     Try to use global variables for syntax cleanliness 
+    load_layer: figure out user input and changing files 
     Potentially split finding and flagging errors into different functions for easier fixing later
 """
 
@@ -24,19 +24,15 @@ import networkx as nx
 import time
 import os
 
-def load_layer(file):
+def load_layer():
 
-    file = input("C:/Users/julia/Documents/vancouver/automation/merged_org.shp  -- or press 1 for file already loaded")
-
-    if file == 1:
-        print("layer already loaded")
-
-    else:
-        layer = iface.addVectorLayer(file, "Merged", 'ogr')
-        print("load_layer done")
+    file = "C:/Users/julia/Documents/vancouver/automation/merged_org.shp"
+    layer = iface.addVectorLayer(file, "Merged", 'ogr')
     
-    #if not layer:  --> include later
-        #print("Layer not loaded")
+    if not layer:
+        print("layer not loaded")
+    
+    print("load_layer done")
 
 
 def error_field():
