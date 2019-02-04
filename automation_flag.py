@@ -204,6 +204,19 @@ def pairs():
     print("pairs (some dangles, some gaps) done")
 
 
+def fragments():
+
+    layer = iface.activeLayer()
+    expr = QgsExpression("length < 2")
+    selection = layer.getFeatures(QgsFeatureRequest(expr))
+
+    fragments = layer.selectedFeatureCount()
+    allSeg = layer.featureCount()
+    pct = fragments/allSeg*100
+        
+    print(f"Fragments: {fragments}/n Pct of total: {pct}%")
+
+
 # Prepping file for flagging
 load_layer()
 error_field()
@@ -217,6 +230,7 @@ no_length()
 duplicates()
 islands()
 pairs()
+fragments()
 
 end = time.time()
 runtime = int(end - start)
