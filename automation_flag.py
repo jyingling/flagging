@@ -231,4 +231,4 @@ Errors flagged: {errors}
 Compared to manual: {pctErrors}%
 Runtime: {runtime}""")
 
-#layer.removeSelection()
+layer.removeSelection()
