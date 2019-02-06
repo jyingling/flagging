@@ -207,15 +207,15 @@ def pairs():
 def fragments():
 
     layer = iface.activeLayer()
-    expr = QgsExpression("length < 2")
-    selection = layer.getFeatures(QgsFeatureRequest(expr))
+    selection = layer.selectByExpression("length < 2")
 
     fragments = layer.selectedFeatureCount()
     allSeg = layer.featureCount()
-    pct = fragments/allSeg*100
-        
-    print(f"Fragments: {fragments}/n Pct of total: {pct}%")
-
+    pct = round(fragments/allSeg*100, 2)
+    
+    print(f"Fragments: {fragments}\nPct of total: {pct}%")
+    
+    layer.removeSelection()
 
 # Prepping file for flagging
 load_layer()
@@ -245,4 +245,4 @@ Errors flagged: {errors}
 Compared to manual: {pctErrors}%
 Runtime: {runtime}""")
 
-#layer.removeSelection()
+layer.removeSelection()
